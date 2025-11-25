@@ -1,291 +1,385 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My 3D Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>CROWN & TIME | Luxury Timepieces</title>
     
-    <style>
-        body { 
-            margin: 0; 
-            font-family: 'Inter', sans-serif;
-            background-color: #050505; /* Fallback color */
-            color: white;
-            overflow-x: hidden;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rolexGreen: '#0A5F38',
+                        rolexGold: '#D4AF37',
+                        cerachrom: '#0B0B0B',
+                        platinum: '#F2F2F2',
+                        oyster: '#8C8C8C'
+                    },
+                    fontFamily: {
+                        serif: ['Times New Roman', 'serif'],
+                        sans: ['Arial', 'sans-serif'],
+                    }
+                }
+            }
         }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { margin: 0; background-color: #0B0B0B; color: #F2F2F2; overflow-x: hidden; }
         
-        /* The 3D Canvas Background */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Puts it behind everything */
-            outline: none;
+        /* 3D Canvas fixed behind everything */
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;}
+        
+        .glass {
+            background: rgba(11, 11, 11, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* Glassmorphism Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        .gold-text {
+            background: linear-gradient(to bottom, #D4AF37, #FFF5C3, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        /* Smooth Scroll */
-        html { scroll-behavior: smooth; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
+
+        /* Loading Spinner */
+        .loader { border: 3px solid #333; border-top: 3px solid #D4AF37; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="font-sans antialiased">
 
     <div id="canvas-container"></div>
 
-    <nav class="fixed w-full z-50 glass-card border-b-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                    PORTFOLIO
+    <nav class="fixed w-full z-50 glass border-b border-rolexGreen/50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-crown text-rolexGold text-2xl"></i>
+                <span class="text-xl font-serif tracking-widest text-rolexGold font-bold">CROWN & TIME</span>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div id="userInfo" class="hidden text-xs text-oyster uppercase tracking-wider text-right">
+                    <span id="userEmail"></span><br>
+                    <span id="adminBadge" class="text-rolexGreen font-bold hidden">ADMINISTRATOR</span>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#home" class="hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition">Home</a>
-                        <a href="#about" class="hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition">About</a>
-                        <a href="#projects" class="hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition">Projects</a>
-                        <a href="#contact" class="hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition">Contact</a>
-                    </div>
-                </div>
+
+                <button id="btnLogin" onclick="toggleModal('authModal')" class="text-rolexGold border border-rolexGold px-4 py-2 text-xs font-bold tracking-widest hover:bg-rolexGold hover:text-black transition uppercase">
+                    Login / Join
+                </button>
+                <button id="btnLogout" onclick="handleLogout()" class="hidden text-red-400 border border-red-400 px-4 py-2 text-xs font-bold tracking-widest hover:bg-red-400 hover:text-black transition uppercase">
+                    Sign Out
+                </button>
             </div>
         </div>
     </nav>
 
-    <div class="relative pt-16">
-
-        <section id="home" class="min-h-screen flex items-center justify-center px-4">
-            <div class="text-center z-10 max-w-4xl">
-                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
-                    Hi, I'm <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">SANTI</span>
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 mb-8 font-light">
-                    Creative Developer & 3D Enthusiast
-                </p>
-                <a href="#projects" class="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-bold text-lg shadow-lg hover:shadow-purple-500/50 transition transform hover:-translate-y-1">
-                    View My Work
-                </a>
-            </div>
-        </section>
-
-        <section id="about" class="py-20 px-4">
-            <div class="max-w-5xl mx-auto">
-                <div class="glass-card rounded-2xl p-8 md:p-12">
-                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-4">About Me</h2>
-                    <p class="text-gray-300 text-lg leading-relaxed mb-6">
-                        I create immersive web experiences using modern technologies. 
-                        I love combining clean code with stunning visuals to tell stories on the web.
-                    </p>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-4 py-1 bg-purple-900/50 rounded-full text-sm border border-purple-500/30">HTML/CSS</span>
-                        <span class="px-4 py-1 bg-purple-900/50 rounded-full text-sm border border-purple-500/30">JavaScript</span>
-                        <span class="px-4 py-1 bg-purple-900/50 rounded-full text-sm border border-purple-500/30">Three.js</span>
-                        <span class="px-4 py-1 bg-purple-900/50 rounded-full text-sm border border-purple-500/30">React</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" class="py-20 px-4">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-4xl font-bold mb-12 text-center">Featured Projects</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition duration-300 group">
-                        <div class="h-48 bg-gradient-to-br from-blue-900 to-black flex items-center justify-center">
-                            <span class="text-4xl">🚀</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 group-hover:text-cyan-400 transition">Space Explorer</h3>
-                            <p class="text-gray-400 text-sm mb-4">A 3D visualization of the solar system using Three.js.</p>
-                            <a href="#" class="text-cyan-400 text-sm font-bold hover:underline">View Code →</a>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition duration-300 group">
-                        <div class="h-48 bg-gradient-to-br from-purple-900 to-black flex items-center justify-center">
-                            <span class="text-4xl">🤖</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition">AI Chat Bot</h3>
-                            <p class="text-gray-400 text-sm mb-4">An intelligent chat interface built with simple JS logic.</p>
-                            <a href="#" class="text-purple-400 text-sm font-bold hover:underline">View Code →</a>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition duration-300 group">
-                        <div class="h-48 bg-gradient-to-br from-pink-900 to-black flex items-center justify-center">
-                            <span class="text-4xl">🎨</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 group-hover:text-pink-400 transition">NFT Gallery</h3>
-                            <p class="text-gray-400 text-sm mb-4">A responsive gallery grid layout for digital art assets.</p>
-                            <a href="#" class="text-pink-400 text-sm font-bold hover:underline">View Code →</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="py-20 px-4 pb-32">
-            <div class="max-w-3xl mx-auto glass-card rounded-2xl p-8 text-center">
-                <h2 class="text-3xl font-bold mb-6">Let's Work Together</h2>
-                <p class="text-gray-300 mb-8">Interested in building something awesome? Send me a message.</p>
-                <div class="flex justify-center space-x-6">
-                    <a href="#" class="px-6 py-3 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition">Email Me</a>
-                    <a href="#" class="px-6 py-3 border border-white font-bold rounded-lg hover:bg-white hover:text-black transition">GitHub</a>
-                </div>
-            </div>
-        </section>
+    <div class="pt-32 pb-20 px-4 max-w-7xl mx-auto min-h-screen">
         
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-serif font-bold gold-text mb-4">PERPETUAL EXCELLENCE</h1>
+            <p class="text-oyster tracking-[0.3em] uppercase text-sm">The Reference Among Luxury Timepieces</p>
+        </div>
+
+        <div id="adminPanel" class="hidden mb-12 glass p-6 rounded-lg border-l-4 border-rolexGreen relative">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xl font-serif text-rolexGold"><i class="fas fa-tools mr-2"></i>Admin Dashboard</h3>
+                <button onclick="toggleModal('productModal')" class="bg-rolexGreen text-white px-4 py-2 rounded text-sm font-bold hover:bg-emerald-600 transition uppercase tracking-wide">
+                    + Add New Watch
+                </button>
+            </div>
+            <p class="text-gray-400 text-sm">You are logged in as Admin (sarceyut2007@gmail.com). You can add or delete products live.</p>
+        </div>
+
+        <div id="loadingIndicator" class="loader"></div>
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+
     </div>
 
-    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-    
+    <div id="authModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div class="glass p-8 w-96 max-w-full relative rounded-lg border border-rolexGold/30">
+            <button onclick="toggleModal('authModal')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            
+            <h2 class="text-2xl font-serif text-rolexGold mb-6 text-center">Client Access</h2>
+            
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <input type="email" id="email" placeholder="Email Address" required class="w-full bg-black/50 border border-gray-700 text-white p-3 mb-3 focus:border-rolexGold outline-none rounded-sm">
+                <input type="password" id="password" placeholder="Password" required class="w-full bg-black/50 border border-gray-700 text-white p-3 mb-6 focus:border-rolexGold outline-none rounded-sm">
+                
+                <button type="submit" class="w-full bg-rolexGold text-black py-3 font-bold uppercase tracking-wider hover:bg-white transition mb-4 rounded-sm">
+                    Enter
+                </button>
+            </form>
+            
+            <div class="text-center">
+                <p class="text-xs text-gray-400">First time? Enter your email/pass and click Enter to register automatically.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="productModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div class="glass p-8 w-96 relative rounded-lg border border-rolexGreen/50">
+            <button onclick="toggleModal('productModal')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            <h2 class="text-xl font-serif text-rolexGreen mb-6">Add Inventory</h2>
+            
+            <form id="addProductForm" onsubmit="handleAddProduct(event)">
+                <label class="text-xs text-rolexGold uppercase">Model Name</label>
+                <input type="text" id="prodName" placeholder="e.g. Submariner Date" required class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-3 outline-none focus:border-rolexGreen">
+                
+                <label class="text-xs text-rolexGold uppercase">Description</label>
+                <input type="text" id="prodDesc" placeholder="e.g. Oystersteel, Black Dial" required class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-3 outline-none focus:border-rolexGreen">
+                
+                <label class="text-xs text-rolexGold uppercase">Price (USD)</label>
+                <input type="number" id="prodPrice" placeholder="10500" required class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-6 outline-none focus:border-rolexGreen">
+                
+                <button type="submit" class="w-full bg-rolexGreen text-white py-3 font-bold uppercase hover:bg-emerald-600 transition rounded-sm">Save to Database</button>
+            </form>
+        </div>
+    </div>
+
     <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.150.0/examples/jsm/"
-        }
-      }
+        { "imports": { "three": "https://unpkg.com/three@0.150.0/build/three.module.js" } }
     </script>
 
     <script type="module">
+        // Import Firebase Functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import * as THREE from 'three';
 
-        // 1. Scene Setup
-        const scene = new THREE.Scene();
-        // Add subtle fog for depth
-        scene.fog = new THREE.FogExp2(0x050505, 0.002);
+        // ---------------------------------------------------------
+        // A. FIREBASE CONFIGURATION
+        // ---------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcZkkdU2R4eQeiuJrN1U-xlwFJ14TOu7o",
+            authDomain: "rolexstore-f7445.firebaseapp.com",
+            projectId: "rolexstore-f7445",
+            storageBucket: "rolexstore-f7445.firebasestorage.app",
+            messagingSenderId: "75664790468",
+            appId: "1:75664790468:web:d68c1b2e2d8e8bb9bd4a91"
+        };
+        // ---------------------------------------------------------
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
         
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        // !!! IMPORTANT: THIS IS THE ADMIN EMAIL !!!
+        const ADMIN_EMAIL = "sarceyut2007@gmail.com"; 
 
-        // 2. Create Floating Shapes
-        const geometryArray = [];
-        
-        // Material (Wireframe looks cool and techy)
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0x8b5cf6, // Violet color
-            wireframe: true,
-            transparent: true,
-            opacity: 0.3
-        });
-
-        // Helper function to create random shapes
-        function createShape() {
-            const random = Math.random();
-            let geometry;
+        // B. 3D BACKGROUND (Three.js)
+        function init3D() {
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0B0B0B, 0.002); // Cerachrom Fog
             
-            if (random > 0.6) {
-                geometry = new THREE.IcosahedronGeometry(Math.random() * 2, 0);
-            } else if (random > 0.3) {
-                geometry = new THREE.TorusKnotGeometry(0.8, 0.3, 100, 16);
-            } else {
-                geometry = new THREE.OctahedronGeometry(Math.random() * 2);
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Gold Wireframe Material
+            const material = new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true, transparent: true, opacity: 0.15 });
+            const shapes = [];
+
+            // Create floating shapes
+            for(let i=0; i<35; i++) {
+                const geo = new THREE.IcosahedronGeometry(Math.random() * 2 + 0.5);
+                const mesh = new THREE.Mesh(geo, material);
+                // Spread them out randomly
+                mesh.position.set((Math.random()-0.5)*60, (Math.random()-0.5)*60, (Math.random()-0.5)*40);
+                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+                scene.add(mesh);
+                shapes.push({ mesh, speed: Math.random() * 0.003 });
             }
 
-            const mesh = new THREE.Mesh(geometry, material);
-            
-            // Random Position spread out
-            mesh.position.x = (Math.random() - 0.5) * 50;
-            mesh.position.y = (Math.random() - 0.5) * 50;
-            mesh.position.z = (Math.random() - 0.5) * 50;
-            
-            // Random Rotation
-            mesh.rotation.x = Math.random() * Math.PI;
-            mesh.rotation.y = Math.random() * Math.PI;
+            camera.position.z = 25;
 
-            scene.add(mesh);
-            geometryArray.push({
-                mesh: mesh,
-                rotationSpeed: Math.random() * 0.02 + 0.005
+            // Animation Loop
+            function animate() {
+                requestAnimationFrame(animate);
+                shapes.forEach(s => {
+                    s.mesh.rotation.x += s.speed;
+                    s.mesh.rotation.y += s.speed;
+                });
+                // Slowly rotate the whole scene for effect
+                scene.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth/window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        init3D();
+
+        // C. AUTHENTICATION LOGIC
+        window.handleAuth = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            
+            try {
+                // Try to login first
+                await signInWithEmailAndPassword(auth, email, pass);
+                alert("Welcome back.");
+            } catch (error) {
+                // If user not found, try to register
+                if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, pass);
+                        alert("Account created successfully!");
+                    } catch (regError) {
+                        alert("Registration Error: " + regError.message);
+                    }
+                } else {
+                    alert("Login Error: " + error.message);
+                }
+            }
+        };
+
+        window.handleLogout = () => {
+            signOut(auth);
+            alert("Signed out.");
+        }
+
+        // Monitor Login State
+        onAuthStateChanged(auth, (user) => {
+            const loginBtn = document.getElementById('btnLogin');
+            const logoutBtn = document.getElementById('btnLogout');
+            const userInfo = document.getElementById('userInfo');
+            const adminPanel = document.getElementById('adminPanel');
+            const modal = document.getElementById('authModal');
+
+            if (user) {
+                // User is logged in
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                userInfo.classList.remove('hidden');
+                document.getElementById('userEmail').textContent = user.email;
+                modal.classList.add('hidden'); // Close modal if open
+
+                // Check if user is the designated ADMIN
+                if (user.email === ADMIN_EMAIL) {
+                    adminPanel.classList.remove('hidden');
+                    document.getElementById('adminBadge').classList.remove('hidden');
+                    window.isAdmin = true;
+                } else {
+                    adminPanel.classList.add('hidden');
+                    document.getElementById('adminBadge').classList.add('hidden');
+                    window.isAdmin = false;
+                }
+            } else {
+                // User is logged out
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                userInfo.classList.add('hidden');
+                adminPanel.classList.add('hidden');
+                window.isAdmin = false;
+            }
+            // Re-render grid to show/hide delete buttons based on admin status
+            renderProducts(currentProducts); 
+        });
+
+        // D. DATABASE LOGIC (Real-time Firestore)
+        let currentProducts = [];
+        // Query products ordered by Price (High to Low)
+        const q = query(collection(db, "products"), orderBy("price", "desc"));
+        
+        // Listen for updates instantly (No page refresh needed)
+        onSnapshot(q, (snapshot) => {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            currentProducts = [];
+            snapshot.forEach((doc) => {
+                currentProducts.push({ id: doc.id, ...doc.data() });
+            });
+            renderProducts(currentProducts);
+        });
+
+        // Add Product (Admin Only function)
+        window.handleAddProduct = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('prodName').value;
+            const desc = document.getElementById('prodDesc').value;
+            const price = Number(document.getElementById('prodPrice').value);
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name, desc, price, 
+                    createdAt: new Date()
+                });
+                toggleModal('productModal');
+                document.getElementById('addProductForm').reset();
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("Error: " + error.message);
+            }
+        };
+
+        // Delete Product (Admin Only function)
+        window.deleteProduct = async (id) => {
+            if(confirm('Permanently delete this item from the database?')) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                } catch (error) {
+                    alert("Error deleting: " + error.message);
+                }
+            }
+        };
+
+        // Render HTML Grid
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            
+            if(products.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 col-span-1 md:col-span-3 text-center py-10">Collection is currently empty. Login as Admin to add items.</p>';
+                return;
+            }
+
+            products.forEach(p => {
+                // Only show trash can if Admin
+                const deleteBtn = window.isAdmin 
+                    ? `<button onclick="deleteProduct('${p.id}')" class="absolute top-3 right-3 z-10 text-red-500 bg-black/50 p-2 rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>` 
+                    : '';
+
+                const html = `
+                    <div class="glass p-6 relative group hover:-translate-y-2 transition duration-500 rounded-sm">
+                        ${deleteBtn}
+                        <div class="h-48 flex items-center justify-center mb-4 bg-gradient-to-b from-transparent to-black/30 rounded border border-gray-800/50">
+                            <i class="fas fa-clock text-7xl text-rolexGold opacity-80 drop-shadow-lg group-hover:scale-110 transition duration-500"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-platinum mb-1">${p.name}</h3>
+                        <p class="text-xs text-rolexGreen uppercase tracking-widest mb-4 font-bold">${p.desc}</p>
+                        <div class="flex justify-between items-center border-t border-gray-800 pt-4">
+                            <span class="gold-text font-serif font-bold text-xl">$${p.price.toLocaleString()}</span>
+                            <button class="text-xs border border-oyster text-oyster px-4 py-2 hover:bg-white hover:text-black transition uppercase font-bold tracking-wider">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += html;
             });
         }
 
-        // Generate 50 shapes
-        for(let i=0; i<50; i++) {
-            createShape();
+        // Helper for Modals
+        window.toggleModal = (id) => {
+            const el = document.getElementById(id);
+            if(el.classList.contains('hidden')) el.classList.remove('hidden');
+            else el.classList.add('hidden');
         }
-
-        // 3. Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-
-        const pointLight = new THREE.PointLight(0xff00ff, 1);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
-
-        // 4. Mouse Interaction
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - windowHalfX);
-            mouseY = (event.clientY - windowHalfY);
-        });
-
-        // 5. Animation Loop
-        const clock = new THREE.Clock();
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            const elapsedTime = clock.getElapsedTime();
-
-            targetX = mouseX * 0.001;
-            targetY = mouseY * 0.001;
-
-            // Rotate the whole group slightly based on mouse
-            scene.rotation.y += 0.05 * (targetX - scene.rotation.y);
-            scene.rotation.x += 0.05 * (targetY - scene.rotation.x);
-
-            // Animate individual shapes
-            geometryArray.forEach((item) => {
-                item.mesh.rotation.x += item.rotationSpeed;
-                item.mesh.rotation.y += item.rotationSpeed;
-            });
-
-            // Gently move camera back and forth
-            camera.position.z = 30 + Math.sin(elapsedTime * 0.5) * 5;
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // 6. Handle Window Resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
     </script>
 </body>
 </html>
