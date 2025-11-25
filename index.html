@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'ESSENCE ROYALE | Alta Perfumería</title>
+    <title>L'ESSENCE ROYALE | Boutique Minimalista</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,115 +11,155 @@
             theme: {
                 extend: {
                     colors: {
-                        rolexGreen: '#0A5F38',
-                        rolexGold: '#D4AF37',
-                        cerachrom: '#0B0B0B',
-                        platinum: '#F2F2F2',
-                        oyster: '#8C8C8C'
+                        rolexGreen: '#0A5F38', // Verde Rolex Principal
+                        rolexDark: '#032b19',
+                        rolexGold: '#D4AF37', // Acento secundario sutil
+                        primaryText: '#1a1a1a', // Texto oscuro para fondo blanco
+                        secondaryText: '#666666',
+                        lightGray: '#f5f5f5'
                     },
                     fontFamily: {
-                        serif: ['Playfair Display', 'serif'], // Fuente más elegante para perfumes
+                        serif: ['Playfair Display', 'serif'], 
                         sans: ['Montserrat', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'clean': '0 2px 15px rgba(0,0,0,0.05)',
                     }
                 }
             }
         }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body { margin: 0; background-color: #050505; color: #F2F2F2; overflow-x: hidden; }
+        body { 
+            margin: 0; 
+            background-color: #ffffff; /* Fondo Blanco */
+            color: #1a1a1a; 
+            overflow-x: hidden; 
+        }
         
-        /* 3D Background */
+        /* 3D Background Container */
         #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;}
         
-        .glass {
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        /* Minimalist Navbar Glass */
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(10, 95, 56, 0.1);
         }
 
-        .gold-text {
-            background: linear-gradient(to right, #D4AF37, #FFF5C3, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Minimalist Card Styles */
+        .clean-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .clean-card:hover {
+            border-color: #0A5F38;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
         }
 
-        /* Imágenes de productos */
+        .highlight-text {
+            color: #0A5F38;
+            font-weight: 600;
+        }
+
+        /* Imágenes de productos limpias */
+        .product-image-container {
+            height: 280px;
+            overflow: hidden;
+            background-color: #f9fafb;
+            position: relative;
+        }
         .product-image {
             width: 100%;
-            height: 250px;
+            height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.7s ease;
         }
-        .luxury-card:hover .product-image { transform: scale(1.05); }
+        .clean-card:hover .product-image { transform: scale(1.03); }
 
-        .loader { border: 3px solid #333; border-top: 3px solid #D4AF37; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto;}
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #0A5F38; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; margin: 20px auto;}
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Inputs Minimalistas */
+        .input-minimal {
+            width: 100%;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            color: #1a1a1a;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-minimal:focus { border-color: #0A5F38; background-color: #fff; }
     </style>
 </head>
 <body class="font-sans antialiased">
 
     <div id="canvas-container"></div>
 
-    <nav class="fixed w-full z-50 glass border-b border-rolexGold/20">
-        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <i class="fas fa-spray-can text-rolexGold text-3xl"></i>
+    <nav class="fixed w-full z-50 nav-glass">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-spray-can text-rolexGreen text-xl"></i>
                 <div class="flex flex-col">
-                    <span class="text-2xl font-serif tracking-widest text-rolexGold font-bold">L'ESSENCE</span>
-                    <span class="text-xs text-oyster tracking-[0.4em] uppercase">Royale</span>
+                    <span class="text-lg font-serif tracking-widest text-primaryText font-bold leading-none">L'ESSENCE</span>
+                    <span class="text-[9px] text-rolexGreen tracking-[0.3em] uppercase font-medium">Royale</span>
                 </div>
             </div>
             
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
                 <div id="userInfo" class="hidden text-right">
-                    <p id="userEmail" class="text-xs text-rolexGold uppercase tracking-wider mb-1"></p>
-                    <span id="roleBadge" class="text-[10px] bg-rolexGreen/20 border border-rolexGreen text-rolexGreen px-2 py-0.5 rounded uppercase hidden">CLIENT</span>
+                    <p id="userEmail" class="text-[10px] text-secondaryText uppercase tracking-wider mb-0.5"></p>
+                    <span id="roleBadge" class="text-[9px] bg-rolexGreen text-white px-2 py-0.5 rounded-full uppercase hidden font-medium">CLIENT</span>
                 </div>
 
-                <button id="btnLogin" onclick="openAuthModal()" class="text-platinum border border-rolexGold/50 px-6 py-2 text-xs font-bold tracking-widest hover:bg-rolexGold hover:text-black transition uppercase">
+                <button id="btnLogin" onclick="openAuthModal()" class="text-primaryText hover:text-rolexGreen border border-gray-300 px-5 py-1.5 text-[11px] font-semibold tracking-widest transition uppercase rounded-sm">
                     Cuenta
                 </button>
-                <button id="btnLogout" onclick="handleLogout()" class="hidden text-red-400 text-xs font-bold tracking-widest hover:text-white transition uppercase">
+                <button id="btnLogout" onclick="handleLogout()" class="hidden text-secondaryText hover:text-red-500 text-[11px] font-semibold tracking-widest transition uppercase">
                     Salir
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="pt-40 pb-20 px-4 max-w-7xl mx-auto min-h-screen">
+    <div class="pt-32 pb-20 px-4 max-w-7xl mx-auto min-h-screen">
         
-        <div class="text-center mb-20">
-            <h1 class="text-5xl md:text-8xl font-serif font-bold gold-text mb-6 italic">Parfum de Luxe</h1>
-            <p class="text-oyster tracking-[0.3em] uppercase text-sm">Fragancias Exclusivas & Esencias Eternas</p>
+        <div class="text-center mb-24 pt-10">
+            <h1 class="text-4xl md:text-6xl font-serif font-medium text-primaryText mb-4 italic">
+                La Colección <span class="text-rolexGreen">Privada</span>
+            </h1>
+            <p class="text-secondaryText tracking-[0.2em] uppercase text-xs font-medium">Alta Perfumería Minimalista</p>
         </div>
 
-        <div id="adminPanel" class="hidden mb-16 glass rounded-lg border-t-4 border-rolexGreen overflow-hidden">
-            <div class="bg-black/50 p-4 border-b border-gray-800 flex justify-between items-center">
-                <h3 class="text-xl font-serif text-rolexGold"><i class="fas fa-crown mr-2"></i>Panel de Control</h3>
-                <div class="space-x-4 text-xs font-bold text-gray-400">
-                    <span class="uppercase">Modo Administrador Activo</span>
-                </div>
+        <div id="adminPanel" class="hidden mb-16 bg-white rounded-lg border border-gray-200 shadow-clean overflow-hidden">
+            <div class="bg-rolexGreen/5 p-4 border-b border-rolexGreen/10 flex justify-between items-center">
+                <h3 class="text-lg font-serif text-rolexGreen"><i class="fas fa-crown mr-2 text-sm"></i>Panel de Control</h3>
+                <span class="text-[10px] font-bold text-rolexGreen uppercase bg-white px-2 py-1 rounded border border-rolexGreen/20">Modo Admin</span>
             </div>
             
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="text-white font-bold uppercase tracking-wide border-b border-rolexGold pb-1">Inventario</h4>
-                        <button onclick="toggleModal('productModal')" class="bg-rolexGreen text-white px-3 py-1 text-xs rounded hover:bg-emerald-600 transition">
-                            + Agregar Perfume
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
+                        <h4 class="text-primaryText font-semibold uppercase tracking-wide text-sm">Inventario</h4>
+                        <button onclick="toggleModal('productModal')" class="bg-rolexGreen text-white px-4 py-2 text-xs rounded-sm hover:bg-rolexDark transition font-medium tracking-wide shadow-sm">
+                            + Nuevo Perfume
                         </button>
                     </div>
-                    <p class="text-xs text-gray-400 mb-2">Gestiona precios y fotos de productos.</p>
+                    <p class="text-xs text-secondaryText mb-2">Gestiona el catálogo de productos.</p>
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold uppercase tracking-wide border-b border-rolexGold pb-1 mb-4">Gestión de Usuarios</h4>
-                    <div class="h-40 overflow-y-auto bg-black/30 rounded p-2 border border-gray-800">
+                    <h4 class="text-primaryText font-semibold uppercase tracking-wide text-sm border-b border-gray-100 pb-2 mb-4">Usuarios</h4>
+                    <div class="h-48 overflow-y-auto bg-gray-50 rounded border border-gray-200 p-2 scrollbar-thin">
                         <table class="w-full text-xs text-left">
                             <tbody id="userTableBody">
                                 </tbody>
@@ -130,55 +170,62 @@
         </div>
 
         <div id="loadingIndicator" class="loader"></div>
-        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             </div>
     </div>
 
-    <div id="authModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/95 backdrop-blur-md">
-        <div class="glass p-8 w-96 relative rounded border border-rolexGold/40">
-            <button onclick="toggleModal('authModal')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+    <div id="authModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div class="bg-white p-8 w-[400px] relative rounded-lg shadow-xl border border-gray-100">
+            <button onclick="toggleModal('authModal')" class="absolute top-4 right-4 text-gray-400 hover:text-primaryText transition">✕</button>
             
             <div class="text-center mb-8">
-                <h2 id="authTitle" class="text-3xl font-serif text-rolexGold mb-2">Iniciar Sesión</h2>
-                <p id="authSubtitle" class="text-xs text-oyster uppercase tracking-widest">Bienvenido a L'Essence</p>
+                <i class="fas fa-spray-can text-rolexGreen text-2xl mb-3"></i>
+                <h2 id="authTitle" class="text-2xl font-serif text-primaryText mb-2">Iniciar Sesión</h2>
+                <p id="authSubtitle" class="text-xs text-secondaryText uppercase tracking-widest font-medium">Acceso a clientes</p>
             </div>
             
             <form id="authForm" onsubmit="handleAuth(event)">
-                <input type="email" id="email" placeholder="Correo Electrónico" required class="w-full bg-black/50 border border-gray-700 text-white p-3 mb-3 focus:border-rolexGold outline-none rounded-sm">
-                <input type="password" id="password" placeholder="Contraseña" required class="w-full bg-black/50 border border-gray-700 text-white p-3 mb-6 focus:border-rolexGold outline-none rounded-sm">
+                <input type="email" id="email" placeholder="Correo Electrónico" required class="input-minimal">
+                <input type="password" id="password" placeholder="Contraseña" required class="input-minimal">
                 
-                <button type="submit" id="authBtn" class="w-full bg-rolexGold text-black py-3 font-bold uppercase tracking-wider hover:bg-white transition mb-4 rounded-sm">
+                <button type="submit" id="authBtn" class="w-full bg-rolexGreen text-white py-3 font-bold uppercase tracking-wider hover:bg-rolexDark transition mb-4 rounded-sm text-sm shadow-sm">
                     Entrar
                 </button>
             </form>
             
-            <div class="text-center border-t border-gray-800 pt-4">
-                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-xs text-rolexGreen hover:text-white underline transition">
+            <div class="text-center border-t border-gray-100 pt-4">
+                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-xs text-rolexGreen hover:text-rolexDark font-medium transition">
                     ¿No tienes cuenta? Regístrate aquí
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="productModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/95 backdrop-blur-md">
-        <div class="glass p-8 w-96 relative rounded border border-rolexGreen/50">
-            <button onclick="toggleModal('productModal')" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-            <h2 class="text-xl font-serif text-rolexGreen mb-6">Nuevo Perfume</h2>
+    <div id="productModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div class="bg-white p-8 w-[450px] relative rounded-lg shadow-xl border border-gray-100">
+            <button onclick="toggleModal('productModal')" class="absolute top-4 right-4 text-gray-400 hover:text-primaryText transition">✕</button>
+            <h2 class="text-xl font-serif text-rolexGreen mb-6 flex items-center gap-2">
+                <i class="fas fa-plus-circle text-sm"></i> Nuevo Perfume
+            </h2>
             
             <form id="addProductForm" onsubmit="handleAddProduct(event)">
-                <label class="text-[10px] text-rolexGold uppercase font-bold">Nombre del Perfume</label>
-                <input type="text" id="prodName" placeholder="Ej. Midnight Rose" required class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-3 outline-none focus:border-rolexGreen">
+                <label class="text-[10px] text-secondaryText uppercase font-bold mb-1 block">Nombre del Perfume</label>
+                <input type="text" id="prodName" placeholder="Ej. Vert Impérial" required class="input-minimal">
                 
-                <label class="text-[10px] text-rolexGold uppercase font-bold">Descripción / Notas</label>
-                <input type="text" id="prodDesc" placeholder="Ej. Jazmín, Vainilla y Oud" required class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-3 outline-none focus:border-rolexGreen">
+                <label class="text-[10px] text-secondaryText uppercase font-bold mb-1 block">Descripción / Notas</label>
+                <input type="text" id="prodDesc" placeholder="Ej. Vetiver, Bergamota, Cedro" required class="input-minimal">
                 
-                <label class="text-[10px] text-rolexGold uppercase font-bold">Precio (USD)</label>
-                <input type="number" id="prodPrice" placeholder="150" required class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-3 outline-none focus:border-rolexGreen">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-secondaryText uppercase font-bold mb-1 block">Precio (USD)</label>
+                        <input type="number" id="prodPrice" placeholder="150" required class="input-minimal">
+                    </div>
+                </div>
                 
-                <label class="text-[10px] text-rolexGold uppercase font-bold">URL de Imagen (Link)</label>
-                <input type="url" id="prodImg" placeholder="https://..." class="w-full bg-black/50 border border-gray-700 text-white p-2 mb-6 outline-none focus:border-rolexGreen">
+                <label class="text-[10px] text-secondaryText uppercase font-bold mb-1 block">URL de Imagen (Link)</label>
+                <input type="url" id="prodImg" placeholder="https://..." class="input-minimal mb-6">
                 
-                <button type="submit" class="w-full bg-rolexGreen text-white py-3 font-bold uppercase hover:bg-emerald-600 transition rounded-sm">Guardar</button>
+                <button type="submit" class="w-full bg-rolexGreen text-white py-3 font-bold uppercase hover:bg-rolexDark transition rounded-sm text-sm shadow-sm">Guardar Producto</button>
             </form>
         </div>
     </div>
@@ -194,15 +241,15 @@
         import * as THREE from 'three';
 
         // ---------------------------------------------------------
-        // ⚠️ PEGA TU CONFIGURACIÓN DE FIREBASE AQUÍ
+        // ✅ TUS CLAVES ESTÁN AQUI ABAJO YA PUESTAS:
         // ---------------------------------------------------------
         const firebaseConfig = {
-            apiKey: "PASTE_API_KEY_HERE",
-            authDomain: "PASTE_AUTH_DOMAIN_HERE",
-            projectId: "PASTE_PROJECT_ID_HERE",
-            storageBucket: "PASTE_STORAGE_BUCKET_HERE",
-            messagingSenderId: "PASTE_SENDER_ID_HERE",
-            appId: "PASTE_APP_ID_HERE"
+            apiKey: "AIzaSyBcZkkdU2R4eQeiuJrN1U-xlwFJ14TOu7o",
+            authDomain: "rolexstore-f7445.firebaseapp.com",
+            projectId: "rolexstore-f7445",
+            storageBucket: "rolexstore-f7445.firebasestorage.app",
+            messagingSenderId: "75664790468",
+            appId: "1:75664790468:web:d68c1b2e2d8e8bb9bd4a91"
         };
         // ---------------------------------------------------------
 
@@ -215,34 +262,43 @@
         window.isAdmin = false;
         let currentUserEmail = "";
 
-        // 1. LÓGICA DE 3D (Partículas de "Perfume")
+        // 1. LÓGICA DE 3D (Minimalista: Esferas Verdes Sutiles)
         function init3D() {
             const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x050505, 0.002);
+            // No fog needed for white background
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Partículas Doradas (como spray de perfume)
-            const geometry = new THREE.BufferGeometry();
-            const vertices = [];
-            for (let i = 0; i < 1000; i++) {
-                vertices.push((Math.random() - 0.5) * 80); // x
-                vertices.push((Math.random() - 0.5) * 80); // y
-                vertices.push((Math.random() - 0.5) * 50); // z
+            // Esferas sutiles Verde Rolex
+            const geometry = new THREE.IcosahedronGeometry(1, 1);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x0A5F38, // Verde Rolex
+                wireframe: true,
+                transparent: true, 
+                opacity: 0.15 // Muy sutil
+            });
+            
+            const shapes = [];
+            for (let i = 0; i < 50; i++) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100, (Math.random() - 0.5) * 50);
+                mesh.scale.setScalar(Math.random() * 2 + 0.5);
+                scene.add(mesh);
+                shapes.push({ mesh, speedX: (Math.random()-0.5)*0.001, speedY: (Math.random()-0.5)*0.001 });
             }
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-            const material = new THREE.PointsMaterial({ color: 0xD4AF37, size: 0.15, transparent: true, opacity: 0.8 });
-            const points = new THREE.Points(geometry, material);
-            scene.add(points);
 
-            camera.position.z = 30;
+            camera.position.z = 40;
 
             function animate() {
                 requestAnimationFrame(animate);
-                points.rotation.y += 0.001; // Rotación suave
-                points.rotation.x += 0.0005;
+                shapes.forEach(s => {
+                    s.mesh.rotation.x += s.speedX;
+                    s.mesh.rotation.y += s.speedY;
+                    s.mesh.position.y += s.speedY * 2;
+                    if(s.mesh.position.y > 50) s.mesh.position.y = -50; // Loop vertical
+                });
                 renderer.render(scene, camera);
             }
             animate();
@@ -254,9 +310,9 @@
         }
         init3D();
 
-        // 2. SISTEMA DE AUTENTICACIÓN (LOGIN vs REGISTRO)
+        // 2. SISTEMA DE AUTENTICACIÓN
         window.openAuthModal = () => {
-            isRegisterMode = false; // Reset a login
+            isRegisterMode = false;
             updateAuthUI();
             toggleModal('authModal');
         }
@@ -272,9 +328,9 @@
             const toggle = document.getElementById('toggleAuthBtn');
             
             if (isRegisterMode) {
-                title.textContent = "Crear Cuenta Nueva";
+                title.textContent = "Crear Cuenta";
                 btn.textContent = "Registrarse";
-                toggle.textContent = "Ya tengo cuenta, iniciar sesión";
+                toggle.textContent = "Volver a Iniciar Sesión";
             } else {
                 title.textContent = "Iniciar Sesión";
                 btn.textContent = "Entrar";
@@ -286,33 +342,31 @@
             e.preventDefault();
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
+            const authModal = document.getElementById('authModal');
+            const btn = document.getElementById('authBtn');
+            btn.disabled = true; btn.textContent = "Procesando...";
 
             try {
                 if (isRegisterMode) {
-                    // MODO REGISTRO
                     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                    const user = userCredential.user;
-                    // Guardar rol básico en Firestore
-                    await setDoc(doc(db, "users", user.uid), {
-                        email: email,
-                        role: "user", // Por defecto es usuario normal
-                        createdAt: new Date()
+                    await setDoc(doc(db, "users", userCredential.user.uid), {
+                        email: email, role: "user", createdAt: new Date()
                     });
                     alert("¡Cuenta creada! Bienvenido.");
                 } else {
-                    // MODO LOGIN
                     await signInWithEmailAndPassword(auth, email, pass);
-                    // No alert needed, onAuthStateChanged handles UI
                 }
                 toggleModal('authModal');
             } catch (error) {
-                alert("Error: " + error.message);
+                alert("Error: " + error.message.replace('Firebase: ', ''));
+            } finally {
+                btn.disabled = false; updateAuthUI();
             }
         };
 
         window.handleLogout = () => signOut(auth);
 
-        // 3. MONITOR DE ESTADO Y ADMIN CHECK
+        // 3. MONITOR DE ESTADO
         onAuthStateChanged(auth, async (user) => {
             const loginBtn = document.getElementById('btnLogin');
             const logoutBtn = document.getElementById('btnLogout');
@@ -326,36 +380,29 @@
                 logoutBtn.classList.remove('hidden');
                 userInfo.classList.remove('hidden');
                 userEmailDisplay.textContent = user.email;
-                currentUserEmail = user.email;
 
-                // VERIFICAR ROL DESDE BASE DE DATOS (FIRESTORE)
-                // Si el usuario no existe en DB (ej: admin viejo), lo creamos
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
-
-                let role = "user";
-                if (userSnap.exists()) {
-                    role = userSnap.data().role;
-                } else {
-                    // Crear doc para usuarios legacy
-                    await setDoc(userRef, { email: user.email, role: "user" });
-                }
+                let role = userSnap.exists() ? userSnap.data().role : "user";
+                if (!userSnap.exists()) await setDoc(userRef, { email: user.email, role: "user" });
                 
-                // Si tu email es el hardcoded de antes, forzamos admin por seguridad
-                if (user.email === "sarceyut2007@gmail.com") role = "admin";
+                if (user.email === "sarceyut2007@gmail.com") role = "admin"; // Hardcoded super admin
 
                 if (role === "admin") {
                     window.isAdmin = true;
                     adminPanel.classList.remove('hidden');
                     roleBadge.textContent = "ADMINISTRATOR";
                     roleBadge.classList.remove('hidden');
-                    roleBadge.classList.add('bg-rolexGold', 'text-black', 'border-rolexGold');
-                    loadUsersForAdmin(); // Cargar lista de usuarios
+                    roleBadge.classList.remove('bg-rolexGreen', 'text-white');
+                    roleBadge.classList.add('bg-rolexDark', 'text-rolexGold');
+                    loadUsersForAdmin();
                 } else {
                     window.isAdmin = false;
                     adminPanel.classList.add('hidden');
                     roleBadge.textContent = "CLIENT";
                     roleBadge.classList.remove('hidden');
+                    roleBadge.classList.add('bg-rolexGreen', 'text-white');
+                    roleBadge.classList.remove('bg-rolexDark', 'text-rolexGold');
                 }
             } else {
                 loginBtn.classList.remove('hidden');
@@ -367,9 +414,9 @@
             renderProducts(currentProducts);
         });
 
-        // 4. GESTIÓN DE PRODUCTOS (CON MULTIMEDIA)
+        // 4. GESTIÓN DE PRODUCTOS
         let currentProducts = [];
-        const q = query(collection(db, "products"), orderBy("price", "desc"));
+        const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
         
         onSnapshot(q, (snapshot) => {
             document.getElementById('loadingIndicator').style.display = 'none';
@@ -382,20 +429,24 @@
 
         window.handleAddProduct = async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = "Guardando...";
+            
             const name = document.getElementById('prodName').value;
             const desc = document.getElementById('prodDesc').value;
             const price = Number(document.getElementById('prodPrice').value);
-            const image = document.getElementById('prodImg').value || "https://images.unsplash.com/photo-1594035910387-406691aa6981?auto=format&fit=crop&q=80&w=600"; // Imagen por defecto
+            const image = document.getElementById('prodImg').value || "https://placehold.co/600x800/f5f5f5/0A5F38?text=L'Essence+Royale";
 
             try {
                 await addDoc(collection(db, "products"), { name, desc, price, image, createdAt: new Date() });
                 toggleModal('productModal');
                 document.getElementById('addProductForm').reset();
             } catch (error) { alert("Error: " + error.message); }
+            finally { btn.disabled = false; btn.textContent = "Guardar Producto"; }
         };
 
         window.deleteProduct = async (id) => {
-            if(confirm('¿Eliminar perfume?')) await deleteDoc(doc(db, "products", id));
+            if(confirm('¿Eliminar perfume permanentemente?')) await deleteDoc(doc(db, "products", id));
         };
 
         function renderProducts(products) {
@@ -403,29 +454,30 @@
             grid.innerHTML = '';
             
             if(products.length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 col-span-3 text-center">Colección vacía.</p>'; return;
+                grid.innerHTML = '<p class="text-secondaryText col-span-3 text-center py-12 font-serif italic">La colección está vacía actualmente.</p>'; return;
             }
 
             products.forEach(p => {
+                // Icono de basura más pequeño
                 const deleteBtn = window.isAdmin 
-                    ? `<button onclick="deleteProduct('${p.id}')" class="absolute top-2 right-2 z-10 bg-red-600 text-white p-2 rounded hover:bg-red-700 shadow-lg"><i class="fas fa-trash"></i></button>` : '';
+                    ? `<button onclick="deleteProduct('${p.id}')" class="absolute top-3 right-3 z-10 bg-white text-red-500 p-1.5 rounded-full hover:bg-red-50 shadow-sm border border-gray-200 transition"><i class="fas fa-trash-alt text-xs"></i></button>` : '';
 
                 const html = `
-                    <div class="luxury-card glass overflow-hidden rounded group relative">
+                    <div class="clean-card rounded-sm overflow-hidden group relative">
                         ${deleteBtn}
-                        <div class="overflow-hidden h-64 bg-black relative">
-                            <img src="${p.image}" class="product-image opacity-80 group-hover:opacity-100" onerror="this.src='https://placehold.co/400x400/111/D4AF37?text=No+Image'">
-                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent"></div>
+                        <div class="product-image-container">
+                            <img src="${p.image}" class="product-image" onerror="this.src='https://placehold.co/600x800/f5f5f5/0A5F38?text=Imagen+No+Disponible'">
+                            <div class="absolute inset-0 bg-rolexGreen/0 group-hover:bg-rolexGreen/5 transition duration-500"></div>
                         </div>
-                        <div class="p-6 relative -mt-4">
-                            <h3 class="text-xl font-serif font-bold text-white mb-1 group-hover:text-rolexGold transition">${p.name}</h3>
-                            <p class="text-xs text-oyster uppercase tracking-widest mb-4 h-4 overflow-hidden">${p.desc}</p>
-                            <div class="flex justify-between items-center border-t border-gray-800 pt-4">
-                                <span class="text-rolexGold font-serif text-lg">$${p.price.toLocaleString()}</span>
-                                <button class="text-[10px] border border-gray-600 text-gray-400 px-4 py-2 hover:border-rolexGold hover:text-rolexGold transition uppercase tracking-widest">
-                                    Ver Detalles
-                                </button>
+                        <div class="p-5 text-center">
+                            <h3 class="text-lg font-serif font-medium text-primaryText mb-1 group-hover:text-rolexGreen transition">${p.name}</h3>
+                            <p class="text-[11px] text-secondaryText uppercase tracking-widest mb-4 h-4 overflow-hidden">${p.desc}</p>
+                            <div class="flex justify-center items-center border-t border-gray-100 pt-4">
+                                <span class="text-rolexGreen font-serif font-semibold text-lg">$${p.price.toLocaleString()}</span>
                             </div>
+                             <button class="w-full mt-4 text-xs border border-rolexGreen text-rolexGreen px-4 py-2 hover:bg-rolexGreen hover:text-white transition uppercase tracking-widest font-medium rounded-sm">
+                                Ver Detalles
+                            </button>
                         </div>
                     </div>
                 `;
@@ -433,27 +485,26 @@
             });
         }
 
-        // 5. GESTIÓN DE USUARIOS (ADMIN SOLAMENTE)
+        // 5. GESTIÓN DE USUARIOS (ADMIN)
         async function loadUsersForAdmin() {
             if (!window.isAdmin) return;
             const tableBody = document.getElementById('userTableBody');
             
-            // Escuchar cambios en usuarios
             onSnapshot(collection(db, "users"), (snapshot) => {
                 tableBody.innerHTML = '';
                 snapshot.forEach(docSnap => {
                     const u = docSnap.data();
                     const isAdm = u.role === 'admin';
                     const row = `
-                        <tr class="border-b border-gray-800 hover:bg-white/5">
-                            <td class="p-2 text-gray-300 truncate max-w-[150px]">${u.email}</td>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <td class="p-2 text-primaryText truncate max-w-[120px] font-medium" title="${u.email}">${u.email.split('@')[0]}</td>
                             <td class="p-2 text-center">
-                                <span class="text-[9px] px-1 rounded ${isAdm ? 'bg-rolexGold text-black' : 'bg-gray-700 text-white'}">
-                                    ${u.role.toUpperCase()}
+                                <span class="text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase ${isAdm ? 'bg-rolexDark text-rolexGold' : 'bg-gray-200 text-secondaryText'}">
+                                    ${u.role}
                                 </span>
                             </td>
                             <td class="p-2 text-right">
-                                ${!isAdm ? `<button onclick="makeAdmin('${docSnap.id}')" class="text-rolexGreen hover:text-white text-[9px] border border-rolexGreen px-1 rounded">Hacer Admin</button>` : ''}
+                                ${!isAdm ? `<button onclick="makeAdmin('${docSnap.id}')" class="text-rolexGreen hover:bg-rolexGreen hover:text-white text-[9px] border border-rolexGreen px-1.5 py-0.5 rounded-sm transition uppercase font-bold">Hacer Admin</button>` : ''}
                             </td>
                         </tr>
                     `;
@@ -463,17 +514,21 @@
         }
 
         window.makeAdmin = async (uid) => {
-            if(confirm("¿Dar permisos de Administrador a este usuario?")) {
+            if(confirm("¿Confirmas dar permisos de Administrador total a este usuario?")) {
                 await updateDoc(doc(db, "users", uid), { role: "admin" });
-                alert("Permisos actualizados.");
             }
         }
 
         // Utils
         window.toggleModal = (id) => {
             const el = document.getElementById(id);
-            if(el.classList.contains('hidden')) el.classList.remove('hidden');
-            else el.classList.add('hidden');
+            if(el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Lock scroll
+            } else {
+                el.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Unlock scroll
+            }
         }
     </script>
 </body>
