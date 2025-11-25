@@ -408,7 +408,7 @@
             
             document.getElementById('detailImg').src = product.image || "https://placehold.co/600x800";
             document.getElementById('detailName').innerText = product.name;
-            document.getElementById('detailDesc').innerText = product.desc; // Si tuvieras desc larga, ponla aquí
+            document.getElementById('detailDesc').innerText = product.desc; 
             document.getElementById('detailPrice').innerText = "$" + product.price.toLocaleString();
             
             // Asignar función al botón del modal
@@ -422,7 +422,6 @@
             const product = currentProducts.find(p => p.id === id);
             cart.push(product);
             updateCartUI();
-            // Feedback visual sutil
             const badge = document.getElementById('cartCount');
             badge.classList.add('scale-125');
             setTimeout(() => badge.classList.remove('scale-125'), 200);
@@ -500,7 +499,7 @@
                     alert("¡Gracias por tu compra! Tu pedido ha sido enviado.");
                     cart = [];
                     updateCartUI();
-                    cancelCheckout(); // Reset forms
+                    cancelCheckout(); 
                     toggleModal('cartModal');
                     btn.disabled = false;
                     btn.innerText = originalText;
@@ -509,7 +508,22 @@
             }, 2000);
         };
 
-        // 3. ADMIN & AUTH (Código previo)
+        // 3. ADMIN & AUTH (REPARADO: openAuthModal agregado)
+        window.openAuthModal = () => {
+            isRegisterMode = false;
+            document.getElementById('authTitle').innerText = "Bienvenido";
+            document.getElementById('authBtn').innerText = "Entrar";
+            document.getElementById('toggleAuthBtn').innerText = "Crear cuenta nueva";
+            toggleModal('authModal');
+        };
+
+        window.toggleAuthMode = () => {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('authTitle').innerText = isRegisterMode ? "Crear Cuenta" : "Bienvenido";
+            document.getElementById('authBtn').innerText = isRegisterMode ? "Registrarse" : "Entrar";
+            document.getElementById('toggleAuthBtn').innerText = isRegisterMode ? "Volver a Login" : "Crear cuenta nueva";
+        };
+
         window.handleAuth = async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -583,13 +597,6 @@
                 el.classList.add('hidden');
                 document.body.style.overflow = 'auto';
             }
-        };
-        
-        window.toggleAuthMode = () => {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authTitle').innerText = isRegisterMode ? "Crear Cuenta" : "Bienvenido";
-            document.getElementById('authBtn').innerText = isRegisterMode ? "Registrarse" : "Entrar";
-            document.getElementById('toggleAuthBtn').innerText = isRegisterMode ? "Volver a Login" : "Crear cuenta nueva";
         };
     </script>
 </body>
